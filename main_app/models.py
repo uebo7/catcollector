@@ -16,3 +16,22 @@ class Cat(models.Model):
     # this concept is based on the "fat models skinny controllers"
     def get_absolute_url(self):
         return reverse('cats_detail', kwargs={'cat_id': self.id})
+
+class Feeding(models.Model):
+    MEALS = (
+        ('B', 'Breakfast'),
+        ('L', 'Lunch'),
+        ('D', 'Dinner'),
+    )
+
+    date = models.DateField('feeding date')
+    meal = models.CharField(max_length=1, choices=MEALS, default=MEALS[0][0], verbose_name='meal type')
+    cat = models.ForeignKey(Cat, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.get_meal_display()} on {self.date}"
+        # NOTE: when a field has a choices kw arg, we can use the get_<fieldname>_display()
+        # method to display the human friendly version of the single character value
+        # This is called field choices in django
+        # https://docs.djangoproject.com/en/4.1/ref/models/fields/
+    class Meta:
+        ordering = '-date',
