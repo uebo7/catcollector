@@ -3,6 +3,16 @@ from django.urls import reverse
 
 # Create your models here.
 
+class Toy(models.Model):
+  name = models.CharField(max_length=50)
+  color = models.CharField(max_length=20)
+  
+  def __str__(self):
+      return self.name
+  
+  def get_absolute_url(self):
+    return reverse('toy_detail', kwargs={'pk': self.id})   
+
 class Cat(models.Model):
     name = models.CharField(max_length=100) # varchar datatype
     breed = models.CharField(max_length=100) # varchar datatype
@@ -15,7 +25,7 @@ class Cat(models.Model):
     # this instance method returns a url for the detail page for each instance
     # this concept is based on the "fat models skinny controllers"
     def get_absolute_url(self):
-        return reverse('cats_detail', kwargs={'cat_id': self.id})
+        return reverse('cat_detail', kwargs={'cat_id': self.id})
 
 class Feeding(models.Model):
     MEALS = (

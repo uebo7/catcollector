@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
+from django.shortcuts import render, redirect
 # NOTE: class-based views are classes that create view function objects containing
 # pre-defined controller logic commonly used for basic CRUD operations
 # their main benefit is to provide convenience to developers
-from .models import Cat
+from .models import Cat, Toy
 from .forms import FeedingForm
 
 # we use this file to define controller logic
@@ -22,14 +23,13 @@ def cats_index(request):
     return render(request, 'cats/index.html', {'cats': cats})
 
 # NOTE: url params are explicitly passed to view functions seperate from the request object
-def cats_detail(request, cat_id):
+def cat_detail(request, cat_id):
     cat = Cat.objects.get(id=cat_id)
     feeding_form = FeedingForm()
     return render(request, 'cats/detail.html', {
         'cat': cat, 
         'feeding_form': feeding_form
     })
-
 
 
 def add_feeding(request, cat_id):
@@ -42,12 +42,7 @@ def add_feeding(request, cat_id):
        new_feeding.save() # this will save a new feeding to the database
     # as long as form is valid we can associate the related cat to the new feeding
     # return a redirect response to the client
-    return redirect('cats_detail', cat_id=cat_id)
-
-
-
-
-
+    return redirect('cat_detail', cat_id=cat_id)
 
 class CatCreate(CreateView):
     model = Cat
@@ -65,3 +60,26 @@ class CatDelete(DeleteView):
     model = Cat
     success_url = '/cats/'
     template_name = 'cats/cat_confirm_delete.html'
+
+class ToyCreate(CreateView):
+    model = Toy
+    fields = '__all__'
+    template_name = 'toys/toy_form.html'
+
+class ToyList(ListView):
+    model = Toy
+    template_name = 'toys/toy_list.html'
+
+class ToyDetail(DetailView):
+    model = Toy
+    template_name = 'toys/toy_detail.html'
+    
+class ToyUpdate(UpdateView):
+    model = Toy
+    fields = '__all__'
+    template_name = 'toys/toy_form.html'
+
+class ToyDelete(DeleteView):
+    model = Toy
+    success_url = '/toys/'
+    template_name = 'toys/toy_confirm_delete.html'
